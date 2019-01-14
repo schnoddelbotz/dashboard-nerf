@@ -1,7 +1,7 @@
 # dashboard-nerf
 
 dashboard-nerf provides a web-dashboard to play MP3/WAV/MP4/WEBM sounds and movies,
-either on the server/dashboard (to nerve your colleagues) or locally in your browser (for preview).
+either on the server/dashboard (to annoy your colleagues) or locally in your browser (for preview).
 
 ## installing
 
