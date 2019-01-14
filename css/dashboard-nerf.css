@@ -1,0 +1,23 @@
+ul.songs, ul.videos {
+  list-style-type: none;
+}
+
+ul.songs li:hover, ul.videos li:hover {
+  cursor: pointer;
+  background: #cfcfef;
+}
+
+ul.songs li, ul.videos li {
+  width:20em;
+  float: left;
+  border:1px solid #efefef;
+  margin:5px;
+  padding:5px;
+}
+
+#videoPlayer, #audioPlayer {
+  position: absolute;
+  right: 15px;
+  top:70px;
+  z-index: 9001;
+}
