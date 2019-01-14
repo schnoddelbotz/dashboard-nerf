@@ -67,7 +67,8 @@ func jsHandler(w http.ResponseWriter, r *http.Request) {
 func audioHandler(w http.ResponseWriter, r *http.Request) {
 	// maybe... https://github.com/hajimehoshi/go-mp3/blob/master/example/main.go ?
 	filename := strings.TrimPrefix(r.URL.Path[1:], "play/audio/")
-	if _, err := os.Stat(mediaRoot + "/" + filename); err == nil {
+	filename = mediaRoot + "/" + filename
+	if _, err := os.Stat(filename); err == nil {
 		playQueue <- playRequest{Filename: filename, MediaType: audio}
 		return
 	}
@@ -77,11 +78,19 @@ func audioHandler(w http.ResponseWriter, r *http.Request) {
 func videoHandler(w http.ResponseWriter, r *http.Request) {
 	// maybe merge with audioHandler -> playHandler ....
 	filename := strings.TrimPrefix(r.URL.Path[1:], "play/video/")
-	if _, err := os.Stat(mediaRoot + "/" + filename); err == nil {
+	filename = mediaRoot + "/" + filename
+	if _, err := os.Stat(filename); err == nil {
 		playQueue <- playRequest{Filename: filename, MediaType: video}
 		return
 	}
 	http.NotFound(w, r)
+}
+
+func speechHandler(w http.ResponseWriter, r *http.Request) {
+	text := r.URL.Query().Get("text")
+	reg := regexp.MustCompile("[^a-zA-Z0-9 \\?!\\.,]+")
+	text = reg.ReplaceAllString(text, "")
+	playQueue <- playRequest{TextToSpeak: text, MediaType: speech}
 }
 
 func getContent() Content {
@@ -109,13 +118,6 @@ func getContent() Content {
 		videos = append(videos, Video{Filename: filepath.Base(filename)})
 	}
 	return Content{Songs: songs, Videos: videos, Version: AppVersion}
-}
-
-func speechHandler(w http.ResponseWriter, r *http.Request) {
-	text := r.URL.Query().Get("text")
-	reg := regexp.MustCompile("[^a-zA-Z0-9 \\?!\\.,]+")
-	text = reg.ReplaceAllString(text, "")
-	playQueue <- playRequest{Filename: text, MediaType: speech}
 }
 
 func runWebserver(documentRoot string, port string) {

@@ -1,9 +1,5 @@
 
-VLC=$(shell test `uname -s` = Darwin && echo /Applications/VLC.app/Contents/MacOS/VLC || echo cvlc)
-AUDIOPLAYER=$(shell test `uname -s` = Darwin && echo afplay || echo play)
-SAY=$(shell test `uname -s` = Darwin && echo say || echo /usr/local/bin/festival-wrapper.sh)
-
-PLATFORMS = linux/amd64 darwin/amd64 windows/amd64
+PLATFORMS = linux/amd64 darwin/amd64 windows/amd64 linux/arm
 
 VERSION = $(shell git describe --tags | cut -dv -f2)
 LDFLAGS := -X main.AppVersion=$(VERSION) -w
@@ -20,7 +16,7 @@ dependencies:
 	go get -u github.com/go-bindata/go-bindata/...
 
 install_players_linux:
-	apt install sox vlc
+	apt install sox libsox-fmt-mp3 vlc festival
 
 test_media:
 	curl -s https://jan.hacker.ch/test_media.tgz | tar -xzf -
@@ -29,11 +25,7 @@ clean:
 	rm -f dashboard-nerf*
 
 run: dashboard-nerf test_media
-	./dashboard-nerf \
-		-media test_media \
-		-videoplayer "$(VLC) --fullscreen --video-on-top --no-video-title-show --no-repeat" \
-		-audioplayer "$(AUDIOPLAYER)" \
-		-speech "$(SAY)"
+	./dashboard-nerf -media test_media
 
 ###
 

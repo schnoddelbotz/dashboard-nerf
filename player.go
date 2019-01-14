@@ -8,8 +8,9 @@ import (
 type mediaType int
 
 type playRequest struct {
-	MediaType mediaType
-	Filename  string
+	MediaType   mediaType
+	Filename    string
+	TextToSpeak string
 }
 
 const (
@@ -25,13 +26,13 @@ func startQueuePlayer() {
 	for elem := range playQueue {
 		switch elem.MediaType {
 		case audio:
-			runCmd = fmt.Sprintf("%s '%s'", audioPlayer, mediaRoot+"/"+elem.Filename)
+			runCmd = fmt.Sprintf(audioPlayer, elem.Filename)
 		case video:
-			runCmd = fmt.Sprintf("%s '%s'", videoPlayer, mediaRoot+"/"+elem.Filename)
+			runCmd = fmt.Sprintf(videoPlayer, elem.Filename)
 		case speech:
-			runCmd = fmt.Sprintf("%s '%s'", speechCommand, elem.Filename)
+			runCmd = fmt.Sprintf(speechCommand, elem.TextToSpeak)
 		}
-		fmt.Printf("Playing: %s type %d using command: %s\n", elem.Filename, elem.MediaType, runCmd)
+		fmt.Printf("Executing: %s\n", runCmd)
 		cmd := exec.Command("sh", "-c", runCmd)
 		cmd.Run()
 	}
