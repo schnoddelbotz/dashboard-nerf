@@ -1,7 +1,7 @@
 package main
 
 const (
-	defaultAudioPlayer = "play"
-	defaultVideoPlayer = "omxplayer"
+	defaultAudioPlayer = "play '%s'"
+	defaultVideoPlayer = "omxplayer '%s'"
 	defaultSpeechApp   = "echo '%s' | festival --tts"
 )
