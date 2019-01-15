@@ -5,32 +5,27 @@ var destination = DASHBOARD;
 
 $( document ).ready(function() {
 
-    $("#audio-link").click(function() {
+    const handleNav = function(selectedMedia) {
       $("main div.container").hide();
-      $("#audio-container").show();
+      $("#" + selectedMedia + "-container").show();
       $("ul.navbar-nav li").removeClass("active");
-      $("#audio-li").addClass("active");
+      $("#" + selectedMedia + "-li").addClass("active");
+    }
+
+    $("#audio-link").click(function() {
+      handleNav("audio");
     });
 
     $("#video-link").click(function() {
-      $("main div.container").hide();
-      $("#video-container").show();
-      $("ul.navbar-nav li").removeClass("active");
-      $("#video-li").addClass("active");
+      handleNav("video");
     });
 
     $("#speech-link").click(function() {
-      $("main div.container").hide();
-      $("#speech-container").show();
-      $("ul.navbar-nav li").removeClass("active");
-      $("#speech-li").addClass("active");
+      handleNav("speech");
     });
 
     $("#about-link").click(function() {
-      $("main div.container").hide();
-      $("#about-container").show();
-      $("ul.navbar-nav li").removeClass("active");
-      $("#about-li").addClass("active");
+      handleNav("about");
     });
 
     $("ul.songs li").click(function(e) {
