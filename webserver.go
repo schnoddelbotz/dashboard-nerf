@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -34,11 +34,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	templateBinary, _ := Asset("index.tpl.html")
 	tpl, err := template.New("index").Parse(string(templateBinary))
 	if err != nil {
-		fmt.Printf("Template parsing error: %v\n", err)
+		log.Fatalf("Template parsing error: %v\n", err)
 	}
 	err = tpl.Execute(w, getContent())
 	if err != nil {
-		fmt.Printf("Template execution error: %v\n", err)
+		log.Fatalf("Template execution error: %v\n", err)
 	}
 }
 
@@ -97,26 +97,25 @@ func getContent() Content {
 	var songs []Song
 	var videos []Video
 
-	// fixme: no support for "/*.{webm,mp4}" in Glob...
-	// https://golang.org/src/path/filepath/match.go?s=5600:5655#L44
-
-	files, _ := filepath.Glob(mediaRoot + "/*.mp3")
-	for _, filename := range files {
-		songs = append(songs, Song{Filename: filepath.Base(filename)})
-	}
-	files, _ = filepath.Glob(mediaRoot + "/*.wav")
-	for _, filename := range files {
-		songs = append(songs, Song{Filename: filepath.Base(filename)})
+	files, err := ioutil.ReadDir(mediaRoot)
+	if err != nil {
+		log.Fatalf("Error reading media root directory: %s", err)
 	}
 
-	files, _ = filepath.Glob(mediaRoot + "/*.webm")
-	for _, filename := range files {
-		videos = append(videos, Video{Filename: filepath.Base(filename)})
+	for _, file := range files {
+		filename := file.Name()
+		switch extension := strings.ToLower(filepath.Ext(filename)); extension {
+		case ".mp3":
+			fallthrough
+		case ".wav":
+			songs = append(songs, Song{Filename: filepath.Base(filename)})
+		case ".mp4":
+			fallthrough
+		case ".webm":
+			videos = append(videos, Video{Filename: filepath.Base(filename)})
+		}
 	}
-	files, _ = filepath.Glob(mediaRoot + "/*.mp4")
-	for _, filename := range files {
-		videos = append(videos, Video{Filename: filepath.Base(filename)})
-	}
+
 	return Content{Songs: songs, Videos: videos, Version: AppVersion}
 }
 

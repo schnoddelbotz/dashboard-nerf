@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 )
 
@@ -32,7 +33,7 @@ func startQueuePlayer() {
 		case speech:
 			runCmd = fmt.Sprintf(speechCommand, elem.TextToSpeak)
 		}
-		fmt.Printf("Executing: %s\n", runCmd)
+		log.Printf("Executing: %s\n", runCmd)
 		cmd := exec.Command("sh", "-c", runCmd)
 		cmd.Run()
 	}
