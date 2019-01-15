@@ -67,6 +67,7 @@
       </div>
 
       <div class="container" id="video-container">
+        <input type="text" id="videofilter" placeholder="filter videos" class="form-control">
         <ul class="videos">
         {{ range .Videos }}  <li data-file="{{ .Filename }}"><span>{{ .Filename }}</span>
         <video width="320" height="240">

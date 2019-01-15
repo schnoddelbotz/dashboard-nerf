@@ -5,6 +5,13 @@ var destination = DASHBOARD;
 
 $( document ).ready(function() {
 
+    $("#videofilter").on("keyup", function(){
+      var value = $(this).val().toLowerCase();
+      $("#video-container ul.videos li").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+
     const handleNav = function(selectedMedia) {
       $("main div.container").hide();
       $("#" + selectedMedia + "-container").show();
