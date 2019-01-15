@@ -33,7 +33,9 @@ $( document ).ready(function() {
     });
 
     $("ul.videos li").click(function(e) {
-      play('video', e.target.innerHTML);
+      e.preventDefault();
+      const fileName = $(e.target).closest('li').data('file');
+      play('video', fileName);
     });
 
     $("#speak-button").click(function(e) {
