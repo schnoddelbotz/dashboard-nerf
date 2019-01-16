@@ -21,3 +21,7 @@ ul.songs li, ul.videos li {
   top:70px;
   z-index: 9001;
 }
+
+#navbarNav {
+  z-index: 9002;
+}

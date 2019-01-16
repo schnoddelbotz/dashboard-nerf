@@ -35,6 +35,10 @@ $( document ).ready(function() {
       handleNav("about");
     });
 
+    $("#stop-link").click(function() {
+      $.get("stop", function( data ) {});
+    });
+
     $("ul.songs li").click(function(e) {
       play('audio', e.target.innerHTML);
     });

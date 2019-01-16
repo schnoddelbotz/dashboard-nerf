@@ -93,6 +93,12 @@ func speechHandler(w http.ResponseWriter, r *http.Request) {
 	playQueue <- playRequest{TextToSpeak: text, MediaType: speech}
 }
 
+func stopHandler(w http.ResponseWriter, r *http.Request) {
+	if cmd != nil {
+		cmd.Process.Kill()
+	}
+}
+
 func getContent() Content {
 	var songs []Song
 	var videos []Video
@@ -124,6 +130,7 @@ func runWebserver(documentRoot string, port string) {
 	http.Handle("/media/", http.StripPrefix("/media/", fs))
 	http.HandleFunc("/speech/", speechHandler)
 	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/stop", stopHandler)
 	http.HandleFunc("/css/", cssHandler)
 	http.HandleFunc("/play/audio/", audioHandler)
 	http.HandleFunc("/play/video/", videoHandler)

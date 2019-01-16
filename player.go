@@ -20,7 +20,10 @@ const (
 	speech mediaType = iota
 )
 
-var playQueue = make(chan playRequest)
+var (
+	playQueue = make(chan playRequest)
+  cmd *exec.Cmd
+)
 
 func startQueuePlayer() {
 	var runCmd string
@@ -34,7 +37,7 @@ func startQueuePlayer() {
 			runCmd = fmt.Sprintf(speechCommand, elem.TextToSpeak)
 		}
 		log.Printf("Executing: %s\n", runCmd)
-		cmd := exec.Command("sh", "-c", runCmd)
+		cmd = exec.Command("sh", "-c", runCmd)
 		cmd.Run()
 	}
 }
