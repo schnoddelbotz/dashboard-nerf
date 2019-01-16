@@ -16,7 +16,7 @@ ul.songs li, ul.videos li {
 }
 
 #videoPlayer, #audioPlayer {
-  position: absolute;
+  position: fixed;
   right: 15px;
   top:70px;
   z-index: 9001;
@@ -24,4 +24,8 @@ ul.songs li, ul.videos li {
 
 #navbarNav {
   z-index: 9002;
+}
+
+main {
+  margin-top: 80px;
 }
