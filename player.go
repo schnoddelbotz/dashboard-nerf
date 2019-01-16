@@ -22,7 +22,7 @@ const (
 
 var (
 	playQueue = make(chan playRequest)
-  cmd *exec.Cmd
+	cmd       *exec.Cmd
 )
 
 func startQueuePlayer() {

@@ -100,8 +100,10 @@ function updateDestinations() {
 function setDestination(dest) {
   if (dest==LOCAL) {
     destination = LOCAL;
+    $("#stop-li").hide();
   } else {
     destination = DASHBOARD;
+    $("#stop-li").show();
   }
   updateDestinations();
 }
