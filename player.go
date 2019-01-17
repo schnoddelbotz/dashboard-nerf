@@ -30,14 +30,17 @@ func startQueuePlayer() {
 	for elem := range playQueue {
 		switch elem.MediaType {
 		case audio:
-			runCmd = fmt.Sprintf(audioPlayer, elem.Filename)
+			playAudio(elem.Filename)
 		case video:
 			runCmd = fmt.Sprintf(videoPlayer, elem.Filename)
+			log.Printf("Executing: %s\n", runCmd)
+			cmd = exec.Command("sh", "-c", runCmd)
+			cmd.Run()
 		case speech:
 			runCmd = fmt.Sprintf(speechCommand, elem.TextToSpeak)
+			log.Printf("Executing: %s\n", runCmd)
+			cmd = exec.Command("sh", "-c", runCmd)
+			cmd.Run()
 		}
-		log.Printf("Executing: %s\n", runCmd)
-		cmd = exec.Command("sh", "-c", runCmd)
-		cmd.Run()
 	}
 }

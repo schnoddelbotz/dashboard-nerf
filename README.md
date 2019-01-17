@@ -3,6 +3,23 @@
 dashboard-nerf provides a web-dashboard to play MP3/WAV/MP4/WEBM sounds and movies,
 either on the server/dashboard (to annoy your colleagues) or locally in your browser (for preview).
 
+# this is the built-in-players branch
+
+As an experiment, to see whether it's feasible to have dashboard-nerf itself play media files
+in order to avoid calling external applications to do so.
+
+### built-in-players Status
+
+- [ ] Audio playback
+  - [ ] `.wav`: partially works, some examples don't play (bitrate error)
+  - [ ] `.mp3`: partially works, only mp3 v1 is supported by beep
+- [ ] Video playback
+  - [ ] `.webm` ?
+  - [ ] `.mp4` try https://github.com/nareix/joy4 ?
+- [ ] Speech: Creates cloud dependency ( https://godoc.org/cloud.google.com/go/speech/apiv1 )
+
+Furthermore, while stop button works for external players, it's not yet implemented here.
+
 ## installing
 
 Grab and just unzip the latest [release](../../releases) for your OS.
