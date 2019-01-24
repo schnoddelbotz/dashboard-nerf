@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os/exec"
 )
 
@@ -26,18 +24,21 @@ var (
 )
 
 func startQueuePlayer() {
-	var runCmd string
 	for elem := range playQueue {
 		switch elem.MediaType {
 		case audio:
-			runCmd = fmt.Sprintf(audioPlayer, elem.Filename)
+			args := audioPlayer[1:]
+			args = append(args, elem.Filename)
+			cmd = exec.Command(audioPlayer[0], args...)
 		case video:
-			runCmd = fmt.Sprintf(videoPlayer, elem.Filename)
+			args := videoPlayer[1:]
+			args = append(args, elem.Filename)
+			cmd = exec.Command(videoPlayer[0], args...)
 		case speech:
-			runCmd = fmt.Sprintf(speechCommand, elem.TextToSpeak)
+			args := speechCommand[1:]
+			args = append(args, elem.TextToSpeak)
+			cmd = exec.Command(speechCommand[0], args...)
 		}
-		log.Printf("Executing: %s\n", runCmd)
-		cmd = exec.Command("sh", "-c", runCmd)
 		cmd.Run()
 	}
 }

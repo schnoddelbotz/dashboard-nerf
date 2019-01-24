@@ -1,7 +1,7 @@
 package main
 
-const (
-	defaultAudioPlayer = "play '%s'"
-	defaultVideoPlayer = "omxplayer '%s'"
-	defaultSpeechApp   = "echo '%s' | festival --tts"
+var (
+	defaultAudioPlayer = []string{"play"}
+	defaultVideoPlayer = []string{"omxplayer"}
+	defaultSpeechApp   = []string{"festival-wrapper.sh"}
 )
