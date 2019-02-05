@@ -76,7 +76,7 @@ func audioHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func videoHandler(w http.ResponseWriter, r *http.Request) {
-	// maybe merge with audioHandler -> playHandler ....
+	// maybe merge with audioHandler -> playHandler .... use getMediaType()!
 	filename := strings.TrimPrefix(r.URL.Path[1:], "play/video/")
 	filename = mediaRoot + "/" + filename
 	if _, err := os.Stat(filename); err == nil {

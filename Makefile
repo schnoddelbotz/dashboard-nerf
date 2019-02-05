@@ -13,6 +13,7 @@ assets.go: index.tpl.html css/dashboard-nerf.css js/dashboard-nerf.js
 	go-bindata -o assets.go index.tpl.html css/* js/*
 
 dependencies:
+	go get -d
 	go get -u github.com/go-bindata/go-bindata/...
 
 install_players_linux:

@@ -13,6 +13,7 @@ var (
 	AppVersion    string
 	mediaRoot     string
 	httpPort      string
+	slackToken    string
 	audioPlayer   arrayFlags
 	videoPlayer   arrayFlags
 	speechCommand arrayFlags
@@ -22,6 +23,7 @@ func main() {
 	flag.Var(&speechCommand, "speech", "speech command")
 	flag.StringVar(&mediaRoot, "media", "media", "media root directory")
 	flag.StringVar(&httpPort, "port", ":9999", "HTTP server TCP port")
+	flag.StringVar(&slackToken, "slackToken", "", "Slack Bot API Token")
 	flag.Var(&audioPlayer, "audioplayer", "audio player to use for MP3/WAV")
 	flag.Var(&videoPlayer, "videoplayer", "video player to use for MP4/WEBM")
 	flag.Parse()
@@ -39,7 +41,12 @@ func main() {
 		speechCommand = defaultSpeechApp
 	}
 
+	if len(slackToken) > 0 {
+		go doSlack()
+	}
+
 	go startQueuePlayer()
+
 	fmt.Printf("Webserver starting on port %s ...\n", httpPort)
 	runWebserver(mediaRoot, httpPort)
 }

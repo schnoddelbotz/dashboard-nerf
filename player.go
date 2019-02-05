@@ -2,6 +2,8 @@ package main
 
 import (
 	"os/exec"
+	"path/filepath"
+	"strings"
 )
 
 type mediaType int
@@ -41,4 +43,14 @@ func startQueuePlayer() {
 		}
 		cmd.Run()
 	}
+}
+
+func getMediaType(filename string) mediaType {
+	switch extension := strings.ToLower(filepath.Ext(filename)); extension {
+	case ".mp3":
+		fallthrough
+	case ".wav":
+		return audio
+	}
+	return video
 }
