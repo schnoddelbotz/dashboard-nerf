@@ -72,11 +72,11 @@
       <div class="container" id="video-container">
         <input type="text" id="videofilter" placeholder="filter videos" class="form-control">
         <ul class="videos">
-        {{ range .Videos }}  <li>{{ .Filename }}</li>
+          {{ range .Videos }}  <li data-src="{{ .Filename }}">{{if $.ThumbsEnabled}}<div><img src="media/thumbs/{{ .Filename }}.png"></div><br>{{end}}<span>{{.Title }}</span></li>
         {{ end }}</ul>
         <video style="display: none;" id="videoPlayer" width="320" height="240" controls>
           <source id="video" type="video/mp4">
-        Your browser does not support the video tag :-(
+          Your browser does not support the video tag :-(
         </video>
       </div>
 

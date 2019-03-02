@@ -8,11 +8,13 @@ ul.songs li:hover, ul.videos li:hover {
 }
 
 ul.songs li, ul.videos li {
-  width:20em;
+  width:225px;
   float: left;
   border:1px solid #efefef;
   margin:5px;
   padding:5px;
+  background: #eee;
+  font-size: 0.7em;
 }
 
 #videoPlayer, #audioPlayer {
@@ -28,4 +30,8 @@ ul.songs li, ul.videos li {
 
 main {
   margin-top: 80px;
+}
+
+ul.videos li div {
+  text-align: center;
 }

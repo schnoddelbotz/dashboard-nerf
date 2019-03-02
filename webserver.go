@@ -18,6 +18,7 @@ type Content struct {
 	Videos  []Video
 	Songs   []Song
 	Version string
+	ThumbsEnabled bool
 }
 
 // Song is basically a .mp3 or .wav file
@@ -28,6 +29,7 @@ type Song struct {
 // Video is basically a .mp4 or .webm file
 type Video struct {
 	Filename string
+	Title string
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -118,11 +120,12 @@ func getContent() Content {
 		case ".mp4":
 			fallthrough
 		case ".webm":
-			videos = append(videos, Video{Filename: filepath.Base(filename)})
+			title := strings.TrimSuffix(filename, filepath.Ext(filename))
+			videos = append(videos, Video{Filename: filepath.Base(filename), Title: title})
 		}
 	}
 
-	return Content{Songs: songs, Videos: videos, Version: AppVersion}
+	return Content{Songs: songs, Videos: videos, Version: AppVersion, ThumbsEnabled: thumbnailsEnabled}
 }
 
 func runWebserver(documentRoot string, port string) {

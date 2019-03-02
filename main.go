@@ -10,13 +10,15 @@ type arrayFlags []string
 
 var (
 	// AppVersion set at build time
-	AppVersion    string
-	mediaRoot     string
-	httpPort      string
-	slackToken    string
-	audioPlayer   arrayFlags
-	videoPlayer   arrayFlags
-	speechCommand arrayFlags
+	AppVersion        string
+	mediaRoot         string
+    thumbRoot		  string
+	httpPort          string
+	slackToken        string
+	audioPlayer       arrayFlags
+	videoPlayer       arrayFlags
+	speechCommand     arrayFlags
+	thumbnailsEnabled bool
 )
 
 func main() {
@@ -26,10 +28,15 @@ func main() {
 	flag.StringVar(&slackToken, "slackToken", "", "Slack Bot API Token")
 	flag.Var(&audioPlayer, "audioplayer", "audio player to use for MP3/WAV")
 	flag.Var(&videoPlayer, "videoplayer", "video player to use for MP4/WEBM")
+	flag.BoolVar(&thumbnailsEnabled, "thumbnails", false, "build/display video thumbnails")
 	flag.Parse()
 	if _, err := os.Stat(mediaRoot); os.IsNotExist(err) {
 		fmt.Printf("Media root directory '%s' (provided via -media argument) does not exist.\n", mediaRoot)
 		os.Exit(1)
+	}
+	if thumbnailsEnabled {
+		thumbRoot = mediaRoot+"/thumbs"
+		go buildThumbnails()
 	}
 	if len(videoPlayer) == 0 {
 		videoPlayer = defaultVideoPlayer

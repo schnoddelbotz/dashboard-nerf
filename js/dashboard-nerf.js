@@ -44,7 +44,11 @@ $( document ).ready(function() {
     });
 
     $("ul.videos li").click(function(e) {
-      play('video', e.target.innerHTML);
+      tgt = e.target;
+      while (tgt.nodeName != "LI") {
+        tgt = tgt.parentNode;
+      }
+      play('video', tgt.getAttribute("data-src"));
     });
 
     $("#speak-button").click(function(e) {
