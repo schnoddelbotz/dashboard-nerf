@@ -51,6 +51,26 @@ $( document ).ready(function() {
       play('video', tgt.getAttribute("data-src"));
     });
 
+    $( "ul.videos li" ).hover(
+      function() {
+        video = this.getAttribute("data-src");
+        div = $(this).children()[0];
+        // only do this if thumbnails in use (DIV would be a SPAN otherwise)
+        if (div.nodeName == "DIV" && this.getAttribute("data-playing") != 1) {
+          this.setAttribute("data-playing", 1);
+          div.innerHTML = '<video loop autoplay muted onloadstart="this.playbackRate=4"><source id="video" type="video/mp4" src="media/'+video+'"></video>';
+        }
+      }, function() {
+        video = this.getAttribute("data-src");
+        div = $(this).children()[0];
+        if (div.nodeName == "DIV") {
+          this.setAttribute("data-playing", 0);
+          thumb = 'media/thumbs/' + video + '.png';
+          div.innerHTML = '<img src="'+thumb+'">';
+        }
+      }
+    );
+
     $("#speak-button").click(function(e) {
       speak($("#speak-text").val());
     });
@@ -68,11 +88,11 @@ function play(mediaType, filename) {
   if (destination == LOCAL) {
     var player = mediaType + 'Player';
     $("#"+player).show();
-    var el = document.getElementById(player),
+    var el = document.getElementById(player);
     elClone = el.cloneNode(true);
     el.parentNode.replaceChild(elClone, el);
     var media = $("#"+player);
-    $("#"+mediaType).attr("src", "media/"+filename);
+    $("#my"+mediaType).attr("src", "media/"+filename);
     media[0].load();
     media[0].oncanplaythrough = media[0].play();
     media[0].onended = function(){ $("#"+player).hide(); }

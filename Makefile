@@ -7,7 +7,7 @@ LDFLAGS := -X main.AppVersion=$(VERSION) -w
 all: dashboard-nerf
 
 dashboard-nerf: assets.go
-	go build -ldflags "$(LDFLAGS)"
+	CGO_ENABLED=0 go build -ldflags "$(LDFLAGS)"
 
 assets.go: index.tpl.html css/dashboard-nerf.css js/dashboard-nerf.js
 	go-bindata -o assets.go index.tpl.html css/* js/*
@@ -35,7 +35,7 @@ release:
 		echo "Building for $$platform..."; \
 		export GOOS=`echo $$platform | cut -d/ -f1` GOARCH=`echo $$platform | cut -d/ -f2`; \
 			export SUFFIX=`test $${GOOS} = windows && echo .exe || echo` ; \
-			go build -o dashboard-nerf_$${GOOS}-$${GOARCH}$${SUFFIX} -ldflags "$(LDFLAGS)"; \
+			CGO_ENABLED=0 go build -o dashboard-nerf_$${GOOS}-$${GOARCH}$${SUFFIX} -ldflags "$(LDFLAGS)"; \
 	done
 
 ziprelease: release

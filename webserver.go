@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 )
 
@@ -18,6 +19,7 @@ type Content struct {
 	Videos  []Video
 	Songs   []Song
 	Version string
+	GoVersion string
 	ThumbsEnabled bool
 }
 
@@ -40,7 +42,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	err = tpl.Execute(w, getContent())
 	if err != nil {
-		log.Fatalf("Template execution error: %v\n", err)
+		log.Printf("Template execution error: %v\n", err)
 	}
 }
 
@@ -125,7 +127,12 @@ func getContent() Content {
 		}
 	}
 
-	return Content{Songs: songs, Videos: videos, Version: AppVersion, ThumbsEnabled: thumbnailsEnabled}
+	return Content{
+		Songs: songs,
+		Videos: videos,
+		Version: AppVersion,
+		GoVersion: runtime.Version(),
+		ThumbsEnabled: thumbnailsEnabled }
 }
 
 func runWebserver(documentRoot string, port string) {

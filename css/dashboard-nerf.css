@@ -34,4 +34,10 @@ main {
 
 ul.videos li div {
   text-align: center;
+  font-size:0;
+  overflow: hidden;
+}
+
+ul.videos li div video, ul.videos li div img {
+  height:120px;
 }

@@ -65,7 +65,7 @@
         {{ range .Songs }}  <li>{{ .Filename }}</li>
         {{ end }}</ul>
         <audio style="display: none;" id="audioPlayer" volume="1" controls>
-          <source id="audio" src="" type="audio/mpeg">
+          <source id="myaudio" src="" type="audio/mpeg">
         </audio>
       </div>
 
@@ -75,7 +75,7 @@
           {{ range .Videos }}  <li data-src="{{ .Filename }}">{{if $.ThumbsEnabled}}<div><img src="media/thumbs/{{ .Filename }}.png"></div><br>{{end}}<span>{{.Title }}</span></li>
         {{ end }}</ul>
         <video style="display: none;" id="videoPlayer" width="320" height="240" controls>
-          <source id="video" type="video/mp4">
+          <source id="myvideo" type="video/mp4">
           Your browser does not support the video tag :-(
         </video>
       </div>
@@ -90,8 +90,9 @@
       <div class="container" id="about-container" style="display: none;">
         <h2>dashboard-nerf</h2>
         <p>Version {{ .Version }}</p>
+        <p>Go {{.GoVersion }}</p>
         <p>Please report bugs via
-        <a href="https://github.com/schnoddelbotz/dashboard-tools">dashboard-nerf on GitHub</a></p>
+        <a href="https://github.com/schnoddelbotz/dashboard-nerf">dashboard-nerf on GitHub</a></p>
       </div>
 
     </main>
