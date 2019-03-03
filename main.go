@@ -37,6 +37,7 @@ func main() {
 	if thumbnailsEnabled {
 		thumbRoot = mediaRoot+"/thumbs"
 		go buildThumbnails()
+		go watchForChanges()
 	}
 	if len(videoPlayer) == 0 {
 		videoPlayer = defaultVideoPlayer

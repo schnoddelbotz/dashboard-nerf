@@ -2,10 +2,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/fsnotify/fsnotify"
+	"log"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
+	"path"
 )
 
 func buildThumbnails() {
@@ -55,4 +59,50 @@ func getVideoDuration(video string) (duration float64, err error) {
 	}
 	duration, err = strconv.ParseFloat(strings.TrimRight(string(output),"\n") , 32)
 	return
+}
+
+func watchForChanges() {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				if event.Op&fsnotify.Create == fsnotify.Create {
+					time.Sleep(10 * time.Second) // ugly ... wait, as file might still grow
+					thumb := thumbRoot +"/"+ path.Base(event.Name) + ".png"
+					if _, err := os.Stat(thumb); os.IsNotExist(err) {
+						err := buildThumb(event.Name, thumb)
+						if err != nil {
+							fmt.Printf("Thumb generation failed for %s: %s\n", event.Name, err)
+						}
+					}
+				}
+				if event.Op&fsnotify.Remove == fsnotify.Remove {
+					thumb := thumbRoot +"/"+ path.Base(event.Name) + ".png"
+					fmt.Printf("Video %s was removed, deleting thumb %s\n", event.Name, thumb)
+					if _, err := os.Stat(thumb); err == nil {
+						err := os.Remove(thumb)
+						if err != nil {
+							fmt.Printf("Failed to delete thumb: %s\n", thumb)
+						}
+					}
+				}
+			}
+		}
+	}()
+
+	err = watcher.Add(mediaRoot)
+	if err != nil {
+		log.Fatal(err)
+	}
+	<-done
 }
