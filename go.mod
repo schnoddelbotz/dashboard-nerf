@@ -5,5 +5,6 @@ require (
 	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/nlopes/slack v0.5.0
 	github.com/pkg/errors v0.8.1 // indirect
+	golang.org/x/image v0.0.0-20190227222117-0694c2d4d067
 	golang.org/x/sys v0.0.0-20190302025703-b6889370fb10 // indirect
 )

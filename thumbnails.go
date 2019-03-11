@@ -1,17 +1,23 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/png"
 	"log"
-	"math"
 	"os"
 	"os/exec"
 	"path"
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
+	"golang.org/x/image/math/fixed"
 )
 
 func buildThumbnails() {
@@ -36,50 +42,64 @@ func buildThumbnails() {
 
 func buildThumb(video string, thumb string) (err error) {
 	fmt.Printf("Creating thumb: %s -> %s\n", video, thumb)
-	duration, width, height, err := getVideoMetaData(video)
+	duration, err := getVideoDuration(video)
 	if err != nil {
 		return
 	}
 	var args []string
-	const scaleOption = "scale=-2:120"
 	args = append(args, "-i", video)
 	args = append(args, "-vframes", "1")
 	args = append(args, "-ss", fmt.Sprintf("%f", duration/2))
-	if duration > 0 {
-		// calc font size relative to the diagonal
-		fontSize := math.Sqrt(width*width+height*height) / 2203.0 * 180
-		drawTextOptions := ": fontcolor=white: fontsize=" + fmt.Sprintf("%v", int(fontSize)) + ": x=10: y=h-th-10"
-		args = append(args, "-filter_complex", "drawtext=text='"+fmt.Sprintf("%.2f", duration)+
-			"s'"+drawTextOptions+","+scaleOption)
-	} else {
-		args = append(args, "-vf", scaleOption)
-	}
+	args = append(args, "-vf", "scale=-2:120")
 	args = append(args, thumb)
 	cmd := exec.Command("ffmpeg", args...)
-
-	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
 	err = cmd.Run()
-	if err != nil {
-		println("error creating thumbnail with 'ffmpeg ", strings.Join(args, " "), "'")
-		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
-		return
+	if duration > 0 {
+		addDurationLabel(thumb, duration)
 	}
 	return
 }
 
-func getVideoMetaData(video string) (duration, width, height float64, err error) {
-	var args = []string{"-v", "error", "-show_entries", "stream=duration,width,height", "-of", "default=noprint_wrappers=1:nokey=1"}
+func addDurationLabel(thumb string, duration float64) {
+	reader, err := os.Open(thumb)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer reader.Close()
+	img, _ := png.Decode(reader)
+	if err != nil {
+		log.Fatal(err)
+	}
+	durationString := fmt.Sprintf("%.2fs", duration)
+	boxLength := (len(durationString) * 8) + 2 // y = 8x + 2 -> enough pixels per character
+	mask := image.NewRGBA(image.Rect(0, 0, boxLength, 15))
+	black := color.RGBA{0, 0, 0, 255}
+	draw.Draw(img.(draw.Image), mask.Bounds(), &image.Uniform{black}, image.ZP, draw.Src)
+
+	white := color.RGBA{255, 255, 255, 255}
+	point := fixed.Point26_6{X: fixed.Int26_6(400), Y: fixed.Int26_6(700)}
+	d := &font.Drawer{
+		Dst:  img.(draw.Image),
+		Src:  image.NewUniform(white),
+		Face: basicfont.Face7x13,
+		Dot:  point,
+	}
+	d.DrawString(durationString)
+	f, err := os.Create(thumb)
+
+	err = png.Encode(f, img)
+	f.Close()
+}
+
+func getVideoDuration(video string) (duration float64, err error) {
+	var args = []string{"-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1"}
 	cmd := exec.Command("ffprobe", append(args, video)...)
 	cmd.Stderr = os.Stderr
 	output, err := cmd.Output()
 	if err != nil {
 		return
 	}
-	rawValues := strings.Split(string(output), "\n")
-	duration, err = strconv.ParseFloat(strings.TrimRight(rawValues[2], "\n"), 32)
-	width, err = strconv.ParseFloat(strings.TrimRight(rawValues[0], "\n"), 32)
-	height, err = strconv.ParseFloat(strings.TrimRight(rawValues[1], "\n"), 32)
+	duration, err = strconv.ParseFloat(strings.TrimRight(string(output), "\n"), 32)
 	return
 }
 
