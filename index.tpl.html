@@ -61,6 +61,7 @@
       </noscript>
 
       <div class="container" id="audio-container" style="display: none;">
+        <input type="text" id="audiofilter" placeholder="filter songs" class="form-control">
         <ul class="songs">
         {{ range .Songs }}  <li>{{ .Filename }}</li>
         {{ end }}</ul>

@@ -12,6 +12,13 @@ $( document ).ready(function() {
       });
     });
 
+    $("#audiofilter").on("keyup", function(){
+      var value = $(this).val().toLowerCase();
+      $("#audio-container ul.songs li").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+
     const handleNav = function(selectedMedia) {
       $("main div.container").hide();
       $("#" + selectedMedia + "-container").show();
